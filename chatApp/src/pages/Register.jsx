@@ -1,13 +1,22 @@
 import React from "react";
-import './style.scss';
 import Add from "../img/addAvatar.png";
 const Register=()=>{
+
+    const handleSunmit=(e)=>{
+        e.preventDefault();
+        console.log(e.target[3]);
+        const displayName=e.target[0].value;
+        const email=e.target[1].value;
+        const password=e.target[2].value;
+        const file=e.target[3].files[0];
+    }
+
     return(
         <div className="formContainer">
             <div className="formWrapper">
                 <span className="logo">Chat App</span>
                 <span className="title">Register</span>
-                <form >
+                <form onSubmit={handleSunmit}>
                     <input type="text"placeholder="display name" />
                     <input type="email" placeholder="email"/>
                     <input type="password"placeholder="password" />
