@@ -12,7 +12,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
-
 const Search = () => {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
@@ -40,39 +39,43 @@ const Search = () => {
     e.code === "Enter" && handleSearch();
   };
 
-
   const handleSelect = async () => {
-    const combineId = currentUser.uid > user.uid ? currentUser.uid + user.uid : user.uid + currentUser.uid;
+   
+    const combinedId =
+      currentUser.uid > user.uid
+        ? currentUser.uid + user.uid
+        : user.uid + currentUser.uid;
     try {
-      const res = await getDoc(doc(db, "chats", combineId));
+      const res = await getDoc(doc(db, "chats", combinedId));
 
       if (!res.exists()) {
-        await setDoc(doc, (db, "chats", combineId), { message: [] });
+      
+        await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
-        await updateDoc(doc(db, "usersChats", currentUser.uid), {
-          [combineId + ".userInfo"]: {
+     
+        await updateDoc(doc(db, "userChats", currentUser.uid), {
+          [combinedId + ".userInfo"]: {
             uid: user.uid,
             displayName: user.displayName,
-            photoURL: user.photoURL
+            photoURL: user.photoURL,
           },
-          [combineId + "date"]: serverTimestamp()
+          [combinedId + ".date"]: serverTimestamp(),
         });
 
-        await updateDoc(doc(db, "usersChats", user.uid), {
-          [combineId + ".userInfo"]: {
+        await updateDoc(doc(db, "userChats", user.uid), {
+          [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
-            photoURL: currentUser.photoURL
+            photoURL: currentUser.photoURL,
           },
-          [combineId + "date"]: serverTimestamp()
+          [combinedId + ".date"]: serverTimestamp(),
         });
-
       }
-    }catch(err){}
-    
+    } catch (err) {}
+
     setUser(null);
-    setUsername("");
-  }
+    setUsername("")
+  };
   return (
     <div className="search">
       <div className="searchForm">

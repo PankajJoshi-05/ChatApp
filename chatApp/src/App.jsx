@@ -11,6 +11,8 @@ import {
 } from "react-router-dom";
 import {AuthContext} from './context/AuthContext';
 import { useContext } from "react";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
    const ProtectedRoute=({children})=>{
@@ -26,6 +28,7 @@ function App() {
   return (
 
     <BrowserRouter>
+     <ToastContainer />
       <Routes>
         <Route path="/">
           <Route index element={<ProtectedRoute>

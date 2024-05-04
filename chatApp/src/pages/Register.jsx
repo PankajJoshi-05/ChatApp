@@ -5,7 +5,7 @@ import {auth,db,storage} from "../firebase";
 import {ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import {useNavigate,Link} from "react-router-dom"
-
+import { toast } from "react-toastify";
 const Register=()=>{
     const [err,setErr]=useState(false);
     const navigate= useNavigate()
@@ -19,7 +19,7 @@ const Register=()=>{
 
 try{
 const res= await createUserWithEmailAndPassword(auth, email, password)
-// console.log(res)
+
 const storageRef = ref(storage, displayName);
 
 const uploadTask = uploadBytesResumable(storageRef, file);
@@ -35,20 +35,26 @@ uploadTask.on(
         displayName,
         photoURL:downloadURL,
       });
+
+      toast.success("User Registered Successfully!!", {
+        position: "top-center",
+      });
       await setDoc(doc(db,"users",res.user.uid),{
        uid:res.user.uid,
        displayName,
        email,
        photoURL:downloadURL,
       });
-
       await setDoc(doc(db,"userChats",res.user.uid),{});
-      navigate("/")
+        navigate("/");
     });
   }
 ); 
 } catch(err){
    setErr(true);
+   toast.error(err.message, {
+    position: "bottom-center",
+  });
 }
     }
 
@@ -58,7 +64,7 @@ uploadTask.on(
                 <span className="logo">Chat App</span>
                 <span className="title">Register</span>
                 <form onSubmit={handleSubmit}>
-                    <input type="text"placeholder="display name" />
+                    <input type="text"placeholder=" Username" />
                     <input type="email" placeholder="email"/>
                     <input type="password"placeholder="password" />
                     <input style={{display:"none"}}type="file" id='file'/>
